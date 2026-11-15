@@ -1,0 +1,6 @@
+﻿$ kubectl exec -n practica-s08 backend-deployment-6c5c6d8dfb-cgg8v -- env | grep -E 'DB_HOST|DB_NAME|APP_PORT|DB_USER|DB_PASS'
+APP_PORT=3000
+DB_HOST=mongo-service
+DB_NAME=practica_db
+DB_PASS=admin123
+DB_USER=admin

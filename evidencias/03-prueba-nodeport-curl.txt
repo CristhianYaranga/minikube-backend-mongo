@@ -1,0 +1,17 @@
+﻿$ minikube service backend-service -n practica-s08 --url
+http://127.0.0.1:61069
+
+$ curl -i http://127.0.0.1:61069
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 112
+ETag: W/"70-GGSZegW7yHXHeCzKOJSAtLi/APE"
+Date: Sun, 15 Nov 2026 00:31:38 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"status":"OK","mongoStatus":"Conectado exitosamente a MongoDB","database":"practica_db","host":"mongo-service"}
+
+$ minikube ssh -- curl -s http://192.168.49.2:30080
+{"status":"OK","mongoStatus":"Conectado exitosamente a MongoDB","database":"practica_db","host":"mongo-service"}

@@ -1,0 +1,15 @@
+﻿$ kubectl get pods,svc,configmaps,secrets -n practica-s08
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/backend-deployment-6c5c6d8dfb-cgg8v   1/1     Running   0          3m42s
+pod/mongo-deployment-5f954dc8c8-cw2zk     1/1     Running   0          3m42s
+
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/backend-service   NodePort    10.104.3.53      <none>        3000:30080/TCP   3m42s
+service/mongo-service     ClusterIP   10.102.146.217   <none>        27017/TCP        3m42s
+
+NAME                         DATA   AGE
+configmap/app-configmap      3      3m42s
+configmap/kube-root-ca.crt   1      3m43s
+
+NAME               TYPE     DATA   AGE
+secret/db-secret   Opaque   2      3m42s
