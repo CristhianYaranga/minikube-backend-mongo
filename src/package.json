@@ -1,0 +1,13 @@
+{
+  "name": "backend-s08",
+  "version": "1.0.0",
+  "description": "Backend API con Node.js, Express y MongoDB para Kubernetes",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}
