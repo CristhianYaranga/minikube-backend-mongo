@@ -1,0 +1,65 @@
+# ==============================================================================
+# CAPA DE APLICACIÓN: Deployment del Backend (Node.js + Express)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Nombre del Deployment del Backend API
+  name: backend-deployment
+  namespace: practica-s08
+  labels:
+    app: backend
+spec:
+  # Cantidad de réplicas del Pod del Backend
+  replicas: 1
+  selector:
+    # Selector que identifica los Pods administrados por este Deployment
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        # Etiqueta del Pod para asociarlo al Deployment y al Service NodePort
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          # Imagen construida localmente en el daemon Docker de Minikube
+          image: backend-s08:1.0
+          # Never obliga a Kubernetes a usar la imagen local sin intentar descargarla de Docker Hub
+          imagePullPolicy: Never
+          ports:
+            # Puerto en el que escucha la aplicación Express (APP_PORT=3000)
+            - containerPort: 3000
+          # Inyección masiva de variables de entorno desde el ConfigMap y el Secret
+          envFrom:
+            - configMapRef:
+                # Inyecta DB_HOST, DB_NAME y APP_PORT desde app-configmap
+                name: app-configmap
+            - secretRef:
+                # Inyecta DB_USER y DB_PASS decodificados desde db-secret
+                name: db-secret
+---
+# ==============================================================================
+# EXPOSICIÓN EXTERNA: Service NodePort para el Backend API
+# ==============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  # Nombre del Service para exponer el Backend fuera del clúster
+  name: backend-service
+  namespace: practica-s08
+spec:
+  # Tipo NodePort: abre un puerto estático en la IP del nodo de Minikube para acceso externo
+  type: NodePort
+  selector:
+    # Dirige el tráfico hacia los Pods con la etiqueta app: backend
+    app: backend
+  ports:
+    - protocol: TCP
+      # Puerto interno del Service dentro del clúster
+      port: 3000
+      # Puerto donde escucha el contenedor del Backend
+      targetPort: 3000
+      # Puerto expuesto en el nodo de Minikube (rango válido: 30000-32767)
+      nodePort: 30080

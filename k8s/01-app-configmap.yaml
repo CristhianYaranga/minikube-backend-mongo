@@ -1,0 +1,15 @@
+# Manifiesto de ConfigMap para externalizar la configuración no sensible del Backend
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # Nombre del ConfigMap que será referenciado por el Deployment del backend
+  name: app-configmap
+  # Namespace donde residen todos los recursos de la práctica
+  namespace: practica-s08
+data:
+  # Nombre del Service ClusterIP de MongoDB para resolución DNS interna en el clúster
+  DB_HOST: "mongo-service"
+  # Nombre de la base de datos a utilizar
+  DB_NAME: "practica_db"
+  # Puerto en el que escuchará la aplicación Node.js + Express
+  APP_PORT: "3000"

@@ -1,0 +1,66 @@
+# ==============================================================================
+# CAPA DE DATOS: Deployment de MongoDB
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Nombre del Deployment para la base de datos MongoDB
+  name: mongo-deployment
+  namespace: practica-s08
+  labels:
+    app: mongo
+spec:
+  # Cantidad de réplicas del Pod de MongoDB
+  replicas: 1
+  selector:
+    # Selector de etiquetas que vincula el Deployment con sus Pods
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        # Etiqueta asignada al Pod para ser seleccionado por el Deployment y el Service
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          # Imagen oficial de MongoDB versión 6
+          image: mongo:6
+          ports:
+            # Puerto estándar de MongoDB dentro del contenedor
+            - containerPort: 27017
+          env:
+            # Usuario root inicial de MongoDB obtenido desde el Secret db-secret
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            # Contraseña root inicial de MongoDB obtenida desde el Secret db-secret
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASS
+---
+# ==============================================================================
+# SERVICIO INTERNO: Service ClusterIP para MongoDB
+# ==============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  # Nombre DNS interno del servicio (coincide con DB_HOST en el ConfigMap)
+  name: mongo-service
+  namespace: practica-s08
+spec:
+  # Tipo ClusterIP: expone el servicio únicamente dentro del clúster de Kubernetes
+  type: ClusterIP
+  selector:
+    # Enruta el tráfico hacia los Pods con la etiqueta app: mongo
+    app: mongo
+  ports:
+    - protocol: TCP
+      # Puerto expuesto por el Service dentro del clúster
+      port: 27017
+      # Puerto de destino en el contenedor de MongoDB
+      targetPort: 27017
